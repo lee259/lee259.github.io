@@ -1,0 +1,43 @@
+---
+// Base layout — wraps all pages
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+  wide?: boolean;
+}
+
+const { title, description, wide = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body>
+    <div class={wide ? 'container container--wide' : 'container'}>
+      <nav>
+        <a href="/" class="logo">Lee's Engineering Notes</a>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/posts">Posts</a></li>
+          <li><a href="https://github.com/lee259" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        </ul>
+      </nav>
+
+      <main>
+        <slot />
+      </main>
+
+      <footer>
+        <p>© {new Date().getFullYear()} Lee. Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>. Hosted on <a href="https://pages.github.com" target="_blank" rel="noopener noreferrer">GitHub Pages</a>.</p>
+      </footer>
+    </div>
+  </body>
+</html>

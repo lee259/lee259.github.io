@@ -1,0 +1,219 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description?: string;
+    date: string;
+    tags?: string[];
+  };
+  content: Record<string, any>;
+  defaultLang: string;
+  availableLangs: string[];
+}
+
+const { frontmatter, content, defaultLang, availableLangs } = Astro.props;
+const { title, description, date, tags = [] } = frontmatter;
+
+const langLabels: Record<string, string> = {
+  en: 'EN',
+  zh: '中文',
+};
+
+const hasMultipleLangs = availableLangs.length > 1;
+
+// Assign components to uppercase variables for Astro rendering
+const EnContent = content.en;
+const ZhContent = content.zh;
+---
+
+<BaseLayout title={title} description={description} wide={true}>
+  <div class="post-layout">
+    <article class="post-content">
+      <header class="post-header">
+        {hasMultipleLangs && (
+          <div class="lang-switcher" data-default-lang={defaultLang}>
+            {availableLangs.map(lang => (
+              <button
+                class={`lang-btn${lang === defaultLang ? ' is-active' : ''}`}
+                data-lang={lang}
+                type="button"
+              >
+                {langLabels[lang] || lang}
+              </button>
+            ))}
+          </div>
+        )}
+        <h1 data-field="title">{title}</h1>
+        <div class="post-meta">
+          <time datetime={date}>
+            {new Date(date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </time>
+          {tags.length > 0 && (
+            <div class="tags">
+              {tags.map(tag => <span class="tag">{tag}</span>)}
+            </div>
+          )}
+        </div>
+      </header>
+      <div data-field="body">
+        {EnContent && <div class="lang-content" data-lang="en"><EnContent /></div>}
+        {ZhContent && <div class="lang-content" data-lang="zh" style={defaultLang !== 'zh' ? 'display:none' : undefined}><ZhContent /></div>}
+      </div>
+    </article>
+
+    <aside class="toc-sidebar">
+      <div class="toc-header">On this page</div>
+      <nav id="toc"></nav>
+    </aside>
+  </div>
+
+  <!-- Mobile TOC toggle button -->
+  <button class="toc-mobile-toggle" aria-label="Toggle table of contents">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <line x1="3" y1="5" x2="17" y2="5" />
+      <line x1="5" y1="10" x2="17" y2="10" />
+      <line x1="5" y1="15" x2="17" y2="15" />
+    </svg>
+  </button>
+
+  <script>
+    import tocbot from 'tocbot';
+
+    // Read config from DOM data attributes
+    const switcher = document.querySelector('.lang-switcher');
+    const defaultLang = switcher?.getAttribute('data-default-lang') || 'en';
+    const hasMultipleLangs = !!switcher;
+
+    // Get the currently visible language content element
+    function getVisibleContentSelector() {
+      const visible = document.querySelector('.lang-content:not([style*="display"])');
+      if (visible) {
+        const lang = visible.getAttribute('data-lang');
+        return `.lang-content[data-lang="${lang}"]`;
+      }
+      return '[data-field="body"]';
+    }
+
+    // Initialize tocbot
+    function initToc() {
+      tocbot.init({
+        tocSelector: '#toc',
+        contentSelector: getVisibleContentSelector(),
+        headingSelector: 'h2, h3',
+        hasInnerContainers: false,
+        scrollSmooth: true,
+        scrollSmoothDuration: 300,
+        scrollSmoothOffset: -80,
+        headingsOffset: 100,
+        orderedList: false,
+        collapseDepth: 0,
+        activeLinkClass: 'is-active-link',
+        activeListItemClass: 'is-active-li',
+      });
+    }
+
+    initToc();
+
+    // Add expand/collapse functionality
+    function initTocToggles() {
+      const tocEl = document.getElementById('toc');
+      if (!tocEl) return;
+
+      // Remove old toggles first (for rebuild after lang switch)
+      tocEl.querySelectorAll('.toc-toggle').forEach(t => t.remove());
+
+      const items = tocEl.querySelectorAll('.toc-list-item');
+      items.forEach(item => {
+        const childList = item.querySelector(':scope > .toc-list');
+        if (!childList) return;
+
+        item.classList.add('has-children', 'is-expanded');
+
+        const toggle = document.createElement('button');
+        toggle.className = 'toc-toggle';
+        toggle.setAttribute('aria-label', 'Toggle section');
+        toggle.type = 'button';
+        item.insertBefore(toggle, item.firstChild);
+
+        toggle.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          item.classList.toggle('is-expanded');
+        });
+      });
+    }
+
+    // Language switching
+    function initLangSwitcher() {
+      if (!hasMultipleLangs) return;
+
+      const buttons = document.querySelectorAll('.lang-btn');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-lang');
+          const target = document.querySelector(`.lang-content[data-lang="${lang}"]`);
+          if (!target) return;
+
+          // Hide all, show target
+          document.querySelectorAll('.lang-content').forEach(el => {
+            el.style.display = 'none';
+          });
+          target.style.display = '';
+
+          // Update active button
+          buttons.forEach(b => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+
+          // Remember preference
+          try { localStorage.setItem('preferred-lang', lang); } catch(e) {}
+
+          // Rebuild TOC - destroy and reinit to rescan DOM
+          tocbot.destroy();
+          initToc();
+          initTocToggles();
+        });
+      });
+
+      // Auto-detect language preference
+      try {
+        const saved = localStorage.getItem('preferred-lang');
+        if (saved && saved !== defaultLang) {
+          const btn = document.querySelector(`.lang-btn[data-lang="${saved}"]`);
+          if (btn) btn.click();
+        }
+      } catch(e) {}
+    }
+
+    // Mobile TOC toggle
+    function initMobileToggle() {
+      const btn = document.querySelector('.toc-mobile-toggle');
+      const sidebar = document.querySelector('.toc-sidebar');
+      if (!btn || !sidebar) return;
+
+      btn.addEventListener('click', () => {
+        sidebar.classList.toggle('is-visible');
+        btn.classList.toggle('is-active');
+      });
+
+      sidebar.addEventListener('click', (e) => {
+        if (e.target.closest('.toc-link')) {
+          sidebar.classList.remove('is-visible');
+          btn.classList.remove('is-active');
+        }
+      });
+    }
+
+    // Initialize everything
+    requestAnimationFrame(() => {
+      initTocToggles();
+      initMobileToggle();
+      initLangSwitcher();
+    });
+  </script>
+</BaseLayout>

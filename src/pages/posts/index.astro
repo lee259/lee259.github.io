@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const posts = [
   {
@@ -12,25 +12,12 @@ const posts = [
 ];
 ---
 
-<BaseLayout title="Lee's Engineering Notes — AI Agent, Frontend Infrastructure, Developer Tools" description="Building AI-native tools, coding agents and scalable frontend systems.">
-  <section class="hero">
-    <h1>Lee's Engineering&nbsp;Notes</h1>
-    <p class="subtitle">
-      Building AI-native tools, coding agents and scalable frontend systems.
-    </p>
-    <div class="topics">
-      <span class="tag">AI Agent</span>
-      <span class="tag">Developer Tools</span>
-      <span class="tag">Frontend Infrastructure</span>
-      <span class="tag">Open Source</span>
-    </div>
-  </section>
-
+<BaseLayout title="Posts — Lee's Engineering Notes" description="All blog posts about AI agents, frontend engineering, and developer tools.">
   <section>
-    <h2 class="section-title">Latest Posts</h2>
-    <ul class="post-list">
+    <h1>All Posts</h1>
+    <ul class="post-list" style="margin-top: 2rem;">
       {
-        posts.map(post => (
+        posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map(post => (
           <li class="post-item">
             <time datetime={post.date}>
               {new Date(post.date).toLocaleDateString('en-US', {

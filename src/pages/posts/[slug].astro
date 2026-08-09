@@ -1,0 +1,59 @@
+---
+import PostLayout from '../../layouts/PostLayout.astro';
+
+export function getStaticPaths() {
+  const postModules = import.meta.glob<any>(
+    '../../content/posts/*.md',
+    { eager: true }
+  );
+
+  const postsBySlug = new Map<string, Map<string, any>>();
+
+  for (const [filePath, mod] of Object.entries(postModules)) {
+    const filename = filePath.split('/').pop()!.replace('.md', '');
+    let slug: string;
+    let lang: string;
+
+    if (filename.endsWith('-zh')) {
+      slug = filename.slice(0, -3);
+      lang = 'zh';
+    } else {
+      slug = filename;
+      lang = 'en';
+    }
+
+    if (!postsBySlug.has(slug)) {
+      postsBySlug.set(slug, new Map());
+    }
+    postsBySlug.get(slug)!.set(lang, mod);
+  }
+
+  return Array.from(postsBySlug.entries()).map(([slug, langs]) => ({
+    params: { slug },
+    props: { langs },
+  }));
+}
+
+const { slug } = Astro.params;
+const { langs } = Astro.props;
+
+// In Astro, markdown modules export frontmatter as a named export
+const defaultLang = langs.has('en') ? 'en' : langs.keys().next().value!;
+const defaultMod = langs.get(defaultLang)!;
+const fm = defaultMod.frontmatter ?? defaultMod.default?.frontmatter;
+const { title, description, date, tags = [] } = fm;
+
+const content: Record<string, any> = {};
+for (const [lang, mod] of langs) {
+  content[lang] = mod.default;
+}
+
+const availableLangs = Array.from(langs.keys());
+---
+
+<PostLayout
+  frontmatter={{ title, description, date, tags }}
+  {content}
+  {defaultLang}
+  {availableLangs}
+/>

@@ -1,0 +1,761 @@
+/* ============================================
+   Lee's Engineering Notes — Global Styles
+   Obsidian-inspired clean reading experience
+   ============================================ */
+
+:root {
+  /* Colors */
+  --bg: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-tertiary: #f4f4f5;
+  --text: #0a0a0b;
+  --text-secondary: #71717a;
+  --text-tertiary: #a1a1aa;
+  --border: #e4e4e7;
+  --border-light: #f0f0f0;
+  --accent: #000000;
+  --accent-hover: #27272a;
+  --tag-bg: #f4f4f5;
+  --tag-text: #52525b;
+  --code-bg: #f5f5f5;
+  --blockquote-bg: #f8f8f8;
+  --table-header-bg: #f6f6f7;
+  --table-row-alt: #fafafa;
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+
+  /* Layout */
+  --max-width: 768px;
+  --max-width-wide: 1120px;
+  --gap: 24px;
+  --radius: 8px;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #09090b;
+    --bg-secondary: #18181b;
+    --bg-tertiary: #1f1f23;
+    --text: #fafafa;
+    --text-secondary: #a1a1aa;
+    --text-tertiary: #71717a;
+    --border: #27272a;
+    --border-light: #1f1f23;
+    --accent: #ffffff;
+    --accent-hover: #e4e4e7;
+    --tag-bg: #27272a;
+    --tag-text: #a1a1aa;
+    --code-bg: #1a1a1e;
+    --blockquote-bg: #141416;
+    --table-header-bg: #1f1f23;
+    --table-row-alt: #141416;
+  }
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--text-secondary);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; margin-top: 2em; margin-bottom: 0.6em; padding-bottom: 0.3em; border-bottom: 1px solid var(--border-light); }
+h3 { font-size: 1.25rem; margin-top: 1.75em; margin-bottom: 0.5em; }
+h4 { font-size: 1.1rem; margin-top: 1.5em; margin-bottom: 0.5em; }
+
+p {
+  margin-bottom: 1.25em;
+}
+
+strong {
+  font-weight: 600;
+}
+
+/* Layout */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--gap);
+}
+
+.container--wide {
+  max-width: var(--max-width-wide);
+}
+
+@media (min-width: 1024px) {
+  .container:not(.container--wide) {
+    padding: 0 calc(var(--gap) + 16px) 0 var(--gap);
+  }
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 200;
+  background: var(--bg);
+}
+
+nav .logo {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+nav .nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+nav .nav-links a {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+nav .nav-links a:hover {
+  color: var(--text);
+}
+
+/* Tags */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--tag-text);
+  background: var(--tag-bg);
+  border-radius: 100px;
+  letter-spacing: 0.01em;
+  transition: all 0.15s ease;
+}
+
+.tag:hover {
+  color: var(--text);
+  background: var(--border);
+}
+
+/* Post list */
+.post-list {
+  list-style: none;
+}
+
+.post-item {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.post-item:first-of-type {
+  padding-top: 0;
+}
+
+.post-item:last-of-type {
+  border-bottom: none;
+}
+
+.post-item time {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  margin-bottom: 0.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.post-item h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  border: none;
+  padding: 0;
+}
+
+.post-item h2 a {
+  color: var(--text);
+}
+
+.post-item h2 a:hover {
+  color: var(--accent);
+}
+
+.post-item p {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Hero section */
+.hero {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+  line-height: 1.15;
+  border: none;
+  padding: 0;
+}
+
+.hero .subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 560px;
+}
+
+.hero .topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
+/* ============================================
+   Post Layout — Two-column with TOC sidebar
+   ============================================ */
+.post-layout {
+  display: flex;
+  gap: 3rem;
+  align-items: flex-start;
+}
+
+.post-layout .post-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ============================================
+   TOC Sidebar — Obsidian-style outline
+   ============================================ */
+.toc-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 2rem;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  padding: 0.25rem 0 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.toc-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.toc-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.toc-sidebar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.toc-header {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin-bottom: 0.75rem;
+  padding-left: 0.75rem;
+}
+
+/* Tocbot overrides — Obsidian-like styling */
+#toc .toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 1px solid var(--border-light);
+  margin-left: 0.75rem;
+}
+
+#toc .toc-list-item {
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+#toc .toc-link {
+  display: block;
+  padding: 3px 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  text-decoration: none !important;
+  line-height: 1.5;
+  transition: color 0.15s ease;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+}
+
+#toc .toc-link:hover {
+  color: var(--text-secondary);
+}
+
+#toc .is-active-li > .toc-link {
+  color: var(--text);
+  font-weight: 500;
+  border-left-color: var(--text);
+}
+
+/* Nested items (h3 under h2) */
+#toc .toc-list .toc-list {
+  border-left-color: var(--border-light);
+}
+
+#toc .toc-list .toc-list .toc-link {
+  font-size: 0.78rem;
+  padding: 2px 0.75rem;
+}
+
+/* ============================================
+   Expand / Collapse — chevron toggle
+   ============================================ */
+.toc-toggle {
+  position: absolute;
+  left: -0.75rem;
+  top: 3px;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  font-size: 0.625rem;
+  padding: 0;
+  border-radius: 3px;
+  transition: all 0.15s ease;
+  z-index: 1;
+}
+
+.toc-toggle:hover {
+  color: var(--text);
+  background: var(--bg-tertiary);
+}
+
+.toc-toggle::before {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 4px 0 4px 5px;
+  border-color: transparent transparent transparent currentColor;
+  transition: transform 0.2s ease;
+}
+
+.is-expanded > .toc-toggle::before {
+  transform: rotate(90deg);
+}
+
+/* Collapsed state — hide child list */
+.has-children:not(.is-expanded) > .toc-list {
+  display: none;
+}
+
+/* When collapsed, show the toggle pointing right */
+.has-children:not(.is-expanded) > .toc-toggle::before {
+  transform: rotate(0deg);
+}
+
+/* ============================================
+   Mobile TOC toggle
+   ============================================ */
+.toc-mobile-toggle {
+  display: none;
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  z-index: 300;
+  transition: all 0.2s ease;
+}
+
+.toc-mobile-toggle:hover {
+  transform: scale(1.05);
+}
+
+.toc-mobile-toggle.is-active {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ============================================
+   Blog post content — Obsidian-style
+   ============================================ */
+.post-content {
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.post-content h2 {
+  padding-top: 0.5rem;
+}
+
+.post-content h3 {
+  padding-top: 0.25rem;
+}
+
+.post-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.post-content a:hover {
+  color: var(--accent-hover);
+}
+
+/* Inline code */
+.post-content code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  padding: 2px 6px;
+  background: var(--code-bg);
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+}
+
+/* Code blocks */
+.post-content pre {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.post-content pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  line-height: inherit;
+  border: none;
+}
+
+/* Blockquotes */
+.post-content blockquote {
+  margin: 1.5rem 0;
+  padding: 0.75rem 1.25rem;
+  border-left: 4px solid var(--text);
+  color: var(--text-secondary);
+  background: var(--blockquote-bg);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.post-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Lists */
+.post-content ul, .post-content ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.post-content li {
+  margin-bottom: 0.5rem;
+}
+
+.post-content li > ul,
+.post-content li > ol {
+  margin: 0.25rem 0 0.5rem;
+}
+
+/* Horizontal rule */
+.post-content hr {
+  margin: 2.5rem 0;
+  border: none;
+  border-top: 2px solid var(--border);
+}
+
+/* ============================================
+   Tables
+   ============================================ */
+.post-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  display: block;
+}
+
+.post-content thead {
+  border-bottom: 2px solid var(--text);
+}
+
+.post-content th {
+  background: var(--table-header-bg);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+}
+
+.post-content td {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.post-content tbody tr {
+  background: var(--bg);
+  transition: background 0.15s ease;
+}
+
+.post-content tbody tr:nth-child(even) {
+  background: var(--table-row-alt);
+}
+
+.post-content tbody tr:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Table inside table — code in cells */
+.post-content td code,
+.post-content th code {
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+/* ============================================
+   Language Switcher
+   ============================================ */
+.lang-switcher {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 1rem;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  padding: 2px;
+  width: fit-content;
+}
+
+.lang-btn {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 12px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: var(--font-sans);
+  line-height: 1.4;
+}
+
+.lang-btn:hover {
+  color: var(--text-secondary);
+}
+
+.lang-btn.is-active {
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Post header */
+.post-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.post-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+  border: none;
+  padding: 0;
+}
+
+.post-header .post-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Footer */
+footer {
+  margin-top: 4rem;
+  padding: 2rem 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+
+footer a {
+  color: var(--text-secondary);
+}
+
+footer a:hover {
+  color: var(--text);
+}
+
+/* Section title */
+.section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin-bottom: 1rem;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 1024px) {
+  /* Hide TOC sidebar on smaller screens */
+  .toc-sidebar {
+    display: none;
+  }
+
+  .toc-sidebar.is-visible {
+    display: block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    max-height: 100vh;
+    background: var(--bg);
+    border-left: 1px solid var(--border);
+    padding: 1.5rem 1rem;
+    z-index: 250;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+  }
+
+  .toc-sidebar.is-visible .toc-header {
+    margin-bottom: 1rem;
+    padding-left: 0.5rem;
+  }
+
+  .toc-sidebar.is-visible #toc .toc-list {
+    margin-left: 0.5rem;
+  }
+
+  .toc-mobile-toggle {
+    display: flex;
+  }
+
+  .post-layout {
+    gap: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --gap: 16px;
+  }
+
+  .hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .post-header h1 {
+    font-size: 1.5rem;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .post-content table {
+    font-size: 0.8rem;
+  }
+
+  .post-content th,
+  .post-content td {
+    padding: 8px 10px;
+  }
+
+  .toc-sidebar.is-visible {
+    width: 260px;
+  }
+}
