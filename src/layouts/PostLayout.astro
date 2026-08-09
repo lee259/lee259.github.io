@@ -33,7 +33,14 @@ const EnContent = content.en;
 const ZhContent = content.zh;
 ---
 
-<BaseLayout title={title} description={description} wide={true}>
+<BaseLayout
+  title={title}
+  description={description}
+  wide={true}
+  type="article"
+  publishedTime={date}
+  tags={tags}
+>
   <div class="post-layout">
     <article class="post-content">
       <header class="post-header">
@@ -89,6 +96,30 @@ const ZhContent = content.zh;
 
   <!-- Store i18n data in hidden element -->
   <div id="i18n-data" style="display:none" data-titles={JSON.stringify(titles)} data-tags={JSON.stringify(allTags)}></div>
+
+  <!-- Structured data for SEO -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    'headline': title,
+    'description': description,
+    'datePublished': date,
+    'author': {
+      '@type': 'Person',
+      'name': 'Lee',
+      'url': 'https://github.com/lee259'
+    },
+    'publisher': {
+      '@type': 'Person',
+      'name': 'Lee',
+      'url': 'https://github.com/lee259'
+    },
+    'keywords': tags.join(', '),
+    'mainEntityOfPage': {
+      '@type': 'WebPage',
+      '@id': Astro.url.href
+    }
+  })} />
 
   <script>
     import tocbot from 'tocbot';
