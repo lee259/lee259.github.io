@@ -17,7 +17,7 @@ Agent 能写代码，但走不完一个完整的开发流程。
 
 这不是 Agent 的问题，是系统设计的问题。这些平台在设计时只考虑了人类用户，没人想过"如果 Agent 要调用我，我该怎么暴露接口"。
 
-![前后对比示意](/images/All-in-Agent-前后对比示意.png)
+![前后对比示意](/images/all-in-agent-before-after.png)
 
 ---
 
@@ -37,7 +37,7 @@ CLI 有天然适合 Agent 的特性：结构化输出（JSON），Agent 可以�
 
 但很多 CLI 是给人用的——输出是彩色表格，参数有交互式提示，错误信息藏在花哨的格式里。想让 Agent 能调，两件事就够了：默认输出 JSON，提供 dry-run 模式。
 
-![三层架构示意](/images/All-in-Agent-三层架构示意.png)
+![三层架构示意](/images/all-in-agent-three-layers.png)
 
 开发者的例子：发版流程。传统做法是打开 Git 托管平台创建 MR、打开 CI/CD 平台触发构建、打开发布平台选择版本发布。封装成 CLI 之后：
 
@@ -92,7 +92,7 @@ CLI 解决了"Agent 能调平台"的问题，但还不够。Agent 还得知道�
 
 人从执行者变成决策者，精力从"做"转向"判断"。
 
-![工作流闭环示意](/images/All-in-Agent-工作流闭环示意.png)
+![工作流闭环示意](/images/all-in-agent-workflow-loop.png)
 
 ---
 
