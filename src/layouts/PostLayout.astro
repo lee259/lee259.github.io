@@ -9,17 +9,21 @@ interface Props {
     tags?: string[];
   };
   content: Record<string, any>;
+  titles: Record<string, string>;
   defaultLang: string;
   availableLangs: string[];
 }
 
-const { frontmatter, content, defaultLang, availableLangs } = Astro.props;
+const { frontmatter, content, titles, defaultLang, availableLangs } = Astro.props;
 const { title, description, date, tags = [] } = frontmatter;
 
 const langLabels: Record<string, string> = {
   en: 'EN',
   zh: '中文',
 };
+
+// 固定语言顺序：EN 在前，中文在后
+const sortedLangs = ['en', 'zh'].filter(l => availableLangs.includes(l));
 
 const hasMultipleLangs = availableLangs.length > 1;
 
@@ -34,7 +38,7 @@ const ZhContent = content.zh;
       <header class="post-header">
         {hasMultipleLangs && (
           <div class="lang-switcher" data-default-lang={defaultLang}>
-            {availableLangs.map(lang => (
+            {sortedLangs.map(lang => (
               <button
                 class={`lang-btn${lang === defaultLang ? ' is-active' : ''}`}
                 data-lang={lang}
@@ -45,7 +49,7 @@ const ZhContent = content.zh;
             ))}
           </div>
         )}
-        <h1 data-field="title">{title}</h1>
+        <h1 data-field="title" data-titles={JSON.stringify(titles)}>{title}</h1>
         <div class="post-meta">
           <time datetime={date}>
             {new Date(date).toLocaleDateString('en-US', {
@@ -165,6 +169,18 @@ const ZhContent = content.zh;
             el.style.display = 'none';
           });
           target.style.display = '';
+
+          // Update title
+          const titleEl = document.querySelector('[data-field="title"]');
+          if (titleEl) {
+            const titlesJson = titleEl.getAttribute('data-titles');
+            if (titlesJson) {
+              try {
+                const titles = JSON.parse(titlesJson);
+                if (titles[lang]) titleEl.textContent = titles[lang];
+              } catch(e) {}
+            }
+          }
 
           // Update active button
           buttons.forEach(b => b.classList.remove('is-active'));

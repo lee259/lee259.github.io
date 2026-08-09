@@ -4,13 +4,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const i18n = {
   en: {
     title: "Lee's Engineering Notes",
-    subtitle: "Building AI-native tools, coding agents and scalable frontend systems.",
+    subtitle: "Building AI-native tools, coding agents and scalable systems.",
     latestPosts: "Latest Posts",
     nav: { home: "Home", posts: "Posts" },
   },
   zh: {
     title: "Lee 的工程笔记",
-    subtitle: "构建 AI 原生工具、编码智能体和可扩展的前端系统。",
+    subtitle: "构建 AI 原生工具、编码智能体和可扩展系统。",
     latestPosts: "最新文章",
     nav: { home: "首页", posts: "文章" },
   },
@@ -36,7 +36,7 @@ const posts = [
 ];
 ---
 
-<BaseLayout title="Lee's Engineering Notes" description="Building AI-native tools, coding agents and scalable frontend systems.">
+<BaseLayout title="Lee's Engineering Notes" description="Building AI-native tools, coding agents and scalable systems.">
   <div class="home-header">
     <div class="lang-switcher" data-default-lang="en">
       <button class="lang-btn is-active" data-lang="en" type="button">EN</button>

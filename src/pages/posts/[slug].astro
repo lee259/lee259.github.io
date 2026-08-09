@@ -44,8 +44,11 @@ const fm = defaultMod.frontmatter ?? defaultMod.default?.frontmatter;
 const { title, description, date, tags = [] } = fm;
 
 const content: Record<string, any> = {};
+const titles: Record<string, string> = {};
 for (const [lang, mod] of langs) {
   content[lang] = mod.default;
+  const langFm = mod.frontmatter ?? mod.default?.frontmatter;
+  titles[lang] = langFm?.title || title;
 }
 
 const availableLangs = Array.from(langs.keys());
@@ -54,6 +57,7 @@ const availableLangs = Array.from(langs.keys());
 <PostLayout
   frontmatter={{ title, description, date, tags }}
   {content}
+  {titles}
   {defaultLang}
   {availableLangs}
 />
