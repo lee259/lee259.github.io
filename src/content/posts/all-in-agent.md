@@ -39,21 +39,19 @@ Once you achieve these two points, regardless of role, the way of working become
 
 ## Wrapping Platform Operations into Tools
 
-### CLI: The Most Direct Agent Interface
+### CLI Is the Most Direct Bridge
 
 Wrapping platform operations into tools — the most direct way is CLI.
 
 CLI has natural properties that suit Agents: structured output (JSON) that Agents can parse directly; idempotent operations that Agents can safely retry; pipe composition that's suitable for orchestration; no GUI dependencies, pure text interaction; auditable, with logs for every operation.
 
-But many CLIs are built for humans — output is colorful tables, parameters have interactive prompts, error messages hide in fancy formatting. To make them Agent-callable, two things are enough: **default to JSON output, provide a dry-run mode**.
+But many CLIs are built for humans — output is colorful tables, parameters have interactive prompts, error messages hide in fancy formatting. To make them Agent-callable, two things are enough: default to JSON output, provide a dry-run mode.
 
 ![Three-Layer Architecture](/images/all-in-agent-three-layers.png)
 
-### Scenario 1: Developer's Release Process
+#### Scenario 1: Developer's Release Process
 
-Traditional approach: open the Git platform to create an MR → open the CI/CD platform to trigger a build → open the release platform to select a version.
-
-After wrapping into CLI:
+The traditional approach is opening the Git platform to create an MR, opening the CI/CD platform to trigger a build, opening the release platform to select a version. After wrapping into CLI:
 
 ```bash
 $ release start --branch feat/fix-bug --dry-run
@@ -64,11 +62,9 @@ $ release start --branch feat/fix-bug
 → Auto-create MR → Wait for CI to pass → Trigger build → Release
 ```
 
-### Scenario 2: Operations Campaign Configuration
+#### Scenario 2: Operations Campaign Configuration
 
-Traditional approach: open the admin console to create a campaign → find assets in the design platform → configure launch in the release platform → monitor data in the analytics platform.
-
-After wrapping into CLI:
+The traditional approach is opening the admin console to create a campaign, finding assets in the design platform, configuring launch in the release platform, monitoring data in the analytics platform. After wrapping into CLI:
 
 ```bash
 $ campaign create --template spring-festival --dry-run
@@ -82,11 +78,62 @@ $ campaign status --id 123
 → Output: Campaign status, impressions, click-through rate
 ```
 
-Developers don't need to leave the terminal, operations staff don't need to open five browser tabs. The Agent executes uniformly, humans confirm at key checkpoints.
+---
+
+## How to Do It: Key Design Points
+
+### Unified Authentication
+
+Every platform has its own login method. Git platforms need SSH keys or tokens, CI/CD platforms need API tokens, admin consoles need SSO. For Agents to call them, you can't configure a separate authentication system for each platform.
+
+The approach is a unified authentication entry point. CLI provides a one-time login command. After the user completes authentication via SSO, credentials are stored locally and automatically reused for all subsequent operations. The Agent doesn't need to know how many authentication methods exist behind the scenes — it just calls the CLI, and the CLI handles authentication.
+
+### Two-Stage Writes: Preview First, Then Execute
+
+This is the most critical safety design. Any write operation is split into two steps:
+
+```bash
+$ cli action do-something --dry-run --json
+→ Output: Operation about to execute, changes, impact scope
+→ Human confirms: yes
+
+$ cli action do-something --confirm
+→ Actually execute
+```
+
+`--dry-run` outputs structured JSON that Agents can use for pre-checks and humans can use for judgment. `--confirm` is the actual execution. The benefit of this pattern: Agents can automatically run dry-run for validation, but write operations must wait for human confirmation.
+
+### Structured Output
+
+CLI defaults to JSON output, not colorful tables. JSON can be directly parsed by Agents and processed by toolchains like `jq`. When humans want a readable format, add the `--pretty` parameter.
+
+### Audit Logs
+
+Every operation is automatically recorded: who operated, when, what command was called, and the result. Logs are written to local files in JSON Lines format, naturally supporting `tail -f` for real-time viewing and `grep` for searching. Agents can also query audit logs for retrospectives.
+
+### Organize Commands by Domain
+
+CLI organizes commands by domain in layers, rather than flattening all operations at one level:
+
+```bash
+$ cli auth login              # Authentication
+$ cli git mr create           # Git operations
+$ cli ci build trigger        # CI/CD operations
+$ cli deploy start            # Release operations
+$ cli config set              # Configuration management
+```
+
+Each domain has its own command group, non-interfering. Agents can load only the command documentation for relevant domains based on task needs, without stuffing all commands into context.
+
+### Skill Templates
+
+Each domain, besides CLI commands, includes an operation guide telling Agents what commands are available, when to use which commands, and what to watch out for. Agents read the corresponding guide when needed and don't load it when not needed.
 
 ---
 
 ## Orchestrating Workflows into Executable Processes
+
+### From "Can Call" to "Can Orchestrate"
 
 CLI solves "Agent can call platforms," but that's not enough. The Agent also needs to know when to call what.
 
