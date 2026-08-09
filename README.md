@@ -1,4 +1,4 @@
-# Lee's Engineering Notes
+# [Lee's Engineering Notes](https://lee259.github.io)
 
 Personal blog about:
 
