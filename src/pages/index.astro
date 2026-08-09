@@ -1,22 +1,53 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+const i18n = {
+  en: {
+    title: "Lee's Engineering Notes",
+    subtitle: "Building AI-native tools, coding agents and scalable frontend systems.",
+    latestPosts: "Latest Posts",
+    nav: { home: "Home", posts: "Posts" },
+  },
+  zh: {
+    title: "Lee 的工程笔记",
+    subtitle: "构建 AI 原生工具、编码智能体和可扩展的前端系统。",
+    latestPosts: "最新文章",
+    nav: { home: "首页", posts: "文章" },
+  },
+};
+
 const posts = [
   {
-    title: 'Agent Memory Management: A Layered Framework for Long-Term Context',
+    title: {
+      en: 'Agent Memory Management: A Layered Framework for Long-Term Context',
+      zh: 'Agent 记忆管理：分层长期上下文框架',
+    },
     slug: 'agent-memory-6-layer-framework',
     date: '2026-08-09',
-    description: 'A practical framework for organizing what agents should remember, what they should forget, and when to update — answering what to keep, what to discard, and when to promote.',
-    tags: ['AI Agent', 'Architecture', 'Developer Tools'],
+    description: {
+      en: 'A practical framework for organizing what agents should remember, what they should forget, and when to update — answering what to keep, what to discard, and when to promote.',
+      zh: '一套实用的框架，用于组织智能体应该记住什么、遗忘什么、何时更新——回答保留什么、丢弃什么、何时升级。',
+    },
+    tags: {
+      en: ['AI Agent', 'Architecture', 'Developer Tools'],
+      zh: ['AI 智能体', '架构', '开发者工具'],
+    },
   },
 ];
 ---
 
-<BaseLayout title="Lee's Engineering Notes — AI Agent, Frontend Infrastructure, Developer Tools" description="Building AI-native tools, coding agents and scalable frontend systems.">
-  <section class="hero">
-    <h1>Lee's Engineering&nbsp;Notes</h1>
-    <p class="subtitle">
-      Building AI-native tools, coding agents and scalable frontend systems.
+<BaseLayout title="Lee's Engineering Notes" description="Building AI-native tools, coding agents and scalable frontend systems.">
+  <div class="home-header">
+    <div class="lang-switcher" data-default-lang="en">
+      <button class="lang-btn is-active" data-lang="en" type="button">EN</button>
+      <button class="lang-btn" data-lang="zh" type="button">中文</button>
+    </div>
+  </div>
+
+  <section class="hero" data-field="hero">
+    <h1 data-i18n="title">{i18n.en.title}</h1>
+    <p class="subtitle" data-i18n="subtitle">
+      {i18n.en.subtitle}
     </p>
     <div class="topics">
       <span class="tag">AI Agent</span>
@@ -27,8 +58,8 @@ const posts = [
   </section>
 
   <section>
-    <h2 class="section-title">Latest Posts</h2>
-    <ul class="post-list">
+    <h2 class="section-title" data-i18n="latestPosts">{i18n.en.latestPosts}</h2>
+    <ul class="post-list" data-field="posts">
       {
         posts.map(post => (
           <li class="post-item">
@@ -39,14 +70,91 @@ const posts = [
                 day: 'numeric',
               })}
             </time>
-            <h2><a href={`/posts/${post.slug}`}>{post.title}</a></h2>
-            <p>{post.description}</p>
-            <div class="tags">
-              {post.tags.map(tag => <span class="tag">{tag}</span>)}
+            <h2><a href={`/posts/${post.slug}`} data-post-title-en={post.title.en} data-post-title-zh={post.title.zh}>{post.title.en}</a></h2>
+            <p data-post-desc-en={post.description.en} data-post-desc-zh={post.description.zh}>{post.description.en}</p>
+            <div class="tags" data-post-tags-en={JSON.stringify(post.tags.en)} data-post-tags-zh={JSON.stringify(post.tags.zh)}>
+              {post.tags.en.map(tag => <span class="tag">{tag}</span>)}
             </div>
           </li>
         ))
       }
     </ul>
   </section>
+
+  <script>
+    const switcher = document.querySelector('.lang-switcher');
+    const defaultLang = switcher?.getAttribute('data-default-lang') || 'en';
+    
+    const translations = {
+      en: {
+        title: "Lee's Engineering Notes",
+        subtitle: "Building AI-native tools, coding agents and scalable frontend systems.",
+        latestPosts: "Latest Posts",
+      },
+      zh: {
+        title: "Lee 的工程笔记",
+        subtitle: "构建 AI 原生工具、编码智能体和可扩展的前端系统。",
+        latestPosts: "最新文章",
+      },
+    };
+
+    function initLangSwitcher() {
+      if (!switcher) return;
+
+      const buttons = switcher.querySelectorAll('.lang-btn');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-lang');
+          if (!lang || !translations[lang]) return;
+
+          // Update text content
+          document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang][key]) {
+              el.textContent = translations[lang][key];
+            }
+          });
+
+          // Update post titles and descriptions
+          document.querySelectorAll('[data-post-title-en]').forEach(el => {
+            const title = el.getAttribute(`data-post-title-${lang}`);
+            if (title) el.textContent = title;
+          });
+
+          document.querySelectorAll('[data-post-desc-en]').forEach(el => {
+            const desc = el.getAttribute(`data-post-desc-${lang}`);
+            if (desc) el.textContent = desc;
+          });
+
+          document.querySelectorAll('[data-post-tags-en]').forEach(el => {
+            const tagsJson = el.getAttribute(`data-post-tags-${lang}`);
+            if (tagsJson) {
+              try {
+                const tags = JSON.parse(tagsJson);
+                el.innerHTML = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+              } catch(e) {}
+            }
+          });
+
+          // Update active button
+          buttons.forEach(b => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+
+          // Remember preference
+          try { localStorage.setItem('home-lang', lang); } catch(e) {}
+        });
+      });
+
+      // Auto-detect language preference
+      try {
+        const saved = localStorage.getItem('home-lang');
+        if (saved && saved !== defaultLang) {
+          const btn = switcher.querySelector(`.lang-btn[data-lang="${saved}"]`);
+          if (btn) btn.click();
+        }
+      } catch(e) {}
+    }
+
+    initLangSwitcher();
+  </script>
 </BaseLayout>

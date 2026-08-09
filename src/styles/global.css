@@ -236,6 +236,13 @@ nav .nav-links a:hover {
   line-height: 1.6;
 }
 
+/* Home header with lang switcher */
+.home-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
 /* Hero section */
 .hero {
   margin-bottom: 3rem;
