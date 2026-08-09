@@ -155,6 +155,4 @@ All in Agent 不是"用 Agent 写代码"，而是把各种操作的入口从平�
 
 ## 参考
 
-- [Anthropic《Building effective agents》](https://www.anthropic.com/engineering/building-effective-agents) — 关于"从一个 Agent 起步、增量加复杂度"的论述，直接支撑了"先集成、再编排"的演进路径
-- [Anthropic《Effective context engineering for AI agents》](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) — context rot 概念，解释了为什么不能把全部能力塞进上下文
 - [Pi 作者 Mario Zechner 博客](https://mariozechner.at/posts/2025-11-30-pi-coding-agent/) — 轻 Harness 哲学：约束进工具不进 prompt

@@ -155,6 +155,4 @@ The final state is: **Humans set goals, make judgments; Agents run processes, do
 
 ## References
 
-- [Anthropic "Building effective agents"](https://www.anthropic.com/engineering/building-effective-agents) — On "starting with one Agent, incrementally adding complexity," directly supporting the "integrate first, then orchestrate" evolution path
-- [Anthropic "Effective context engineering for AI agents"](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) — The concept of context rot, explaining why you can't stuff all capabilities into context
 - [Pi author Mario Zechner's blog](https://mariozechner.at/posts/2025-11-30-pi-coding-agent/) — Light Harness philosophy: constraints in tools, not in prompts
