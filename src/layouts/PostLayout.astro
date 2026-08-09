@@ -10,11 +10,12 @@ interface Props {
   };
   content: Record<string, any>;
   titles: Record<string, string>;
+  allTags: Record<string, string[]>;
   defaultLang: string;
   availableLangs: string[];
 }
 
-const { frontmatter, content, titles, defaultLang, availableLangs } = Astro.props;
+const { frontmatter, content, titles, allTags, defaultLang, availableLangs } = Astro.props;
 const { title, description, date, tags = [] } = frontmatter;
 
 const langLabels: Record<string, string> = {
@@ -49,7 +50,7 @@ const ZhContent = content.zh;
             ))}
           </div>
         )}
-        <h1 data-field="title" data-titles={JSON.stringify(titles)}>{title}</h1>
+        <h1 data-field="title">{title}</h1>
         <div class="post-meta">
           <time datetime={date}>
             {new Date(date).toLocaleDateString('en-US', {
@@ -59,7 +60,7 @@ const ZhContent = content.zh;
             })}
           </time>
           {tags.length > 0 && (
-            <div class="tags">
+            <div class="tags" data-field="tags">
               {tags.map(tag => <span class="tag">{tag}</span>)}
             </div>
           )}
@@ -86,8 +87,16 @@ const ZhContent = content.zh;
     </svg>
   </button>
 
+  <!-- Store i18n data in hidden element -->
+  <div id="i18n-data" style="display:none" data-titles={JSON.stringify(titles)} data-tags={JSON.stringify(allTags)}></div>
+
   <script>
     import tocbot from 'tocbot';
+
+    // Read i18n data from DOM
+    const i18nEl = document.getElementById('i18n-data');
+    const titles = i18nEl ? JSON.parse(i18nEl.getAttribute('data-titles') || '{}') : {};
+    const allTags = i18nEl ? JSON.parse(i18nEl.getAttribute('data-tags') || '{}') : {};
 
     // Read config from DOM data attributes
     const switcher = document.querySelector('.lang-switcher');
@@ -172,14 +181,14 @@ const ZhContent = content.zh;
 
           // Update title
           const titleEl = document.querySelector('[data-field="title"]');
-          if (titleEl) {
-            const titlesJson = titleEl.getAttribute('data-titles');
-            if (titlesJson) {
-              try {
-                const titles = JSON.parse(titlesJson);
-                if (titles[lang]) titleEl.textContent = titles[lang];
-              } catch(e) {}
-            }
+          if (titleEl && titles[lang]) {
+            titleEl.textContent = titles[lang];
+          }
+
+          // Update tags
+          const tagsEl = document.querySelector('[data-field="tags"]');
+          if (tagsEl && allTags[lang]) {
+            tagsEl.innerHTML = allTags[lang].map(tag => `<span class="tag">${tag}</span>`).join('');
           }
 
           // Update active button
