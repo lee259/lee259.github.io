@@ -17,6 +17,8 @@ Product managers face the same issue: writing requirements in the requirements p
 
 This isn't an Agent problem — it's a system design problem. These platforms were designed only for human users. Nobody thought, "If an Agent needs to call me, how should I expose my interface?"
 
+![Before and After Comparison](/images/All-in-Agent-前后对比示意.png)
+
 ---
 
 **"All in Agent" means two things.**
@@ -34,6 +36,8 @@ Wrapping platform operations into tools — the most direct way is CLI.
 CLI has natural properties that suit Agents: structured output (JSON) that Agents can parse directly; idempotent operations that Agents can safely retry; pipe composition that's suitable for orchestration; no GUI dependencies, pure text interaction; auditable, with logs for every operation.
 
 But many CLIs are built for humans — output is colorful tables, parameters have interactive prompts, error messages hide in fancy formatting. To make them Agent-callable, two things are enough: default to JSON output, provide a dry-run mode.
+
+![Three-Layer Architecture](/images/All-in-Agent-三层架构示意.png)
 
 Developer example: the release process. Traditional approach is opening the Git platform to create an MR, opening the CI/CD platform to trigger a build, opening the release platform to select a version. After wrapping into CLI:
 
@@ -87,6 +91,8 @@ Workflow orchestration doesn't equal automation. Key checkpoints need human judg
 | Retrospective | Analyze root causes | Archive records to knowledge base |
 
 Humans shift from executors to decision-makers, energy moves from "doing" to "judging."
+
+![Workflow Loop](/images/All-in-Agent-工作流闭环示意.png)
 
 ---
 
