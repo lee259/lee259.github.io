@@ -1,11 +1,10 @@
 # Lee's Engineering Notes
 
-A collection of thoughts and practices about:
+Personal blog about:
 
 - **AI Agents** — Coding agents, memory systems, agent architecture
 - **Frontend Infrastructure** — Scalable systems, tooling, component libraries
 - **Developer Tools** — Productivity tools, automation, CLI utilities
-- **Open Source** — [Agent Brain](https://github.com/lee259/agent-brain) and other projects
 
 ## Tech Stack
 
@@ -24,24 +23,23 @@ npm run preview # preview the build
 
 ## Writing
 
-Add a new `.astro` file in `src/pages/posts/` and import the `PostLayout` component:
+Posts are markdown files in `src/content/posts/`. For bilingual posts, create two files with the same slug:
 
-```astro
----
-import PostLayout from '../../layouts/PostLayout.astro';
----
+- `my-post.md` (English, default)
+- `my-post-zh.md` (Chinese)
 
-<PostLayout
-  title="Your Post Title"
-  description="Brief description"
-  date="2025-01-01"
-  tags={['Tag1', 'Tag2']}
->
-  Your content here...
-</PostLayout>
+The dynamic route `[slug].astro` automatically groups them and provides a language switcher.
+
+Post frontmatter:
+
+```yaml
+---
+title: "Your Post Title"
+description: "Brief description"
+date: 2025-01-01
+tags: ["Tag1", "Tag2"]
+---
 ```
-
-Then add it to the posts list in `src/pages/index.astro` and `src/pages/posts/index.astro`.
 
 ## License
 
