@@ -82,7 +82,7 @@ Where the agent's knowledge compounds: pitfall records, workarounds, known limit
 
 - **Capture frequently**: every pitfall is worth recording, even if not fully understood — land it first, validate later.
 - **Corrections are allowed**: when understanding changes, update and mark the old understanding as outdated; don't perpetuate errors.
-- Validated experience is the raw material for promotion to Rules / Knowledge; it also allows demotion, see §5.
+- Validated experience is the raw material for promotion to Rules / Knowledge; it also allows demotion.
 
 ### Session Layer
 
@@ -92,7 +92,7 @@ One-time working memory: current goal, progress, unverified leads. Discarded whe
 
 Session is also the "entry point" for other layers — for example, when you hit a pitfall, you naturally Capture it into Experience.
 
-> Interestingly, [Anthropic's official guidance](https://www.anthropic.com/engineering/building-effective-agents) aligns naturally with our implementation: agents should periodically write goals, progress, key decisions, and unresolved issues to notes outside the context, then read them back after the context is cleared. **Memory is "carefully curated working state," not a transcript of the conversation.**
+> [Anthropic's official guidance](https://www.anthropic.com/engineering/building-effective-agents) aligns naturally with our implementation: agents should periodically write goals, progress, key decisions, and unresolved issues to notes outside the context, then read them back after the context is cleared. **Memory is "carefully curated working state," not a transcript of the conversation.**
 
 ## 4. Layer Relationships and Conflicts
 
@@ -134,6 +134,7 @@ Memory is alive; information moves between layers.
 flowchart LR
     A[Pitfall encountered] --> B[Record in Experience]
     B --> C{Validated across projects?}
+    C -- Not yet --> B
     C -- Constraint-type --> D[Promote to Rules]
     C -- Fact-type --> E[Promote to Knowledge]
     C -- Design tradeoff --> F[Supplement Decisions]
