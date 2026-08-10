@@ -231,6 +231,4 @@ One sentence summary: **This framework is a governance upgrade for "agents that 
 - [Anthropic — Building effective agents](https://www.anthropic.com/engineering/building-effective-agents) — start with one agent, add complexity incrementally
 - [Pi author Mario Zechner's blog](https://mariozechner.at/posts/2025-11-30-pi-coding-agent/) — light harness "state externalization" philosophy, complementary to this framework's Session / Experience implementation
 
----
 
-*This framework comes from over a year of running AI-assisted development in production. It evolved from the simple `CLAUDE.md` approach into a structured system that scales across projects and teams.*
