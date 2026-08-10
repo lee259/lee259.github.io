@@ -231,12 +231,3 @@ touch AGENTS.md CLAUDE.md CONTEXT.md
 - [Anthropic《Building effective agents》](https://www.anthropic.com/engineering/building-effective-agents)——从一个 Agent 起步、增量加复杂度
 - [Pi 作者 Mario Zechner 博客](https://mariozechner.at/posts/2025-11-30-pi-coding-agent/)——轻 Harness 的"状态外置"哲学，与本框架 Session / Experience 的落地互为表里
 
----
-
-## 变更记录
-
-| 日期 | 修订 |
-| --- | --- |
-| 2026-08-09 | 博客化：移除全部内部链接与内部术语，新增个人观点与怀疑视角，ASCII 图改为 Mermaid，压缩模板与例子，补充公开参考来源 |
-| 2026-08-08 | 改名：Memories → Experience；新增层间冲突规则、生命周期（升格/降级）章节；补充常见误区 |
-| 2026-07-11 | 初版：六层模型定义、层间关系与维护原则；后续补充实践落地章节 |
