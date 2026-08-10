@@ -1,7 +1,7 @@
 ---
 title: "Pi Agent Design Philosophy: From Bare-Bones to Light Harness"
 description: "What Pi Agent cut away tells you more than what it kept. A deep dive into six key decisions, plus 5 actionable takeaways for building your own harness."
-date: 2026-08-09
+date: 2026-08-10
 tags: ["AI Agent", "Architecture", "Developer Tools"]
 ---
 

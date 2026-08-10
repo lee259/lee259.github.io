@@ -1,7 +1,7 @@
 ---
 title: "Pi Agent 设计哲学剖析"
 description: "从「毛坯房」到「轻 Harness」——Pi Agent 砍掉的东西，比它有的东西更能说明它的设计哲学。"
-date: 2026-08-09
+date: 2026-08-10
 tags: ["AI Agent", "架构", "开发者工具"]
 ---
 
