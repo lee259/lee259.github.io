@@ -1,7 +1,7 @@
 ---
 title: "Agent Memory Management: A Layered Framework for Long-Term Context"
 description: "A practical framework for organizing what agents should remember, what they should forget, and when to update — answering 'what to keep, what to discard, and when to promote.'"
-date: 2026-08-10
+date: 2026-07-11
 tags: ["AI Agent", "Architecture", "Developer Tools"]
 ---
 
