@@ -98,18 +98,14 @@ Session 也是其他层的"入口"——比如踩了个坑，顺手就该 Captur
 
 六层的依赖关系：
 
-```
-         Identity
-            │
-            ▼
-          Rules
-         ╱     ╲
-Knowledge    Decisions
-         ╲     ╱
-       Experience
-            │
-            ▼
-         Session
+```mermaid
+flowchart TB
+    Identity --> Rules
+    Rules --> Knowledge
+    Rules --> Decisions
+    Knowledge --> Experience
+    Decisions --> Experience
+    Experience --> Session
 ```
 
 1. **Identity 和 Rules** 生命周期最长，约束所有下层的边界。
@@ -134,13 +130,13 @@ Rules > Identity > Knowledge > Decisions > Experience
 
 **升格路径**——从"捡来的经验"到"硬化的知识"：
 
-```
-踩坑
-  → 记入 Experience
-    → 跨项目验证有效？
-      → 约束类 → 升格为 Rules
-      → 事实类 → 升格为 Knowledge
-      → 设计权衡 → 补充进 Decisions
+```mermaid
+flowchart LR
+    A[踩坑] --> B[记入 Experience]
+    B --> C{跨项目验证有效？}
+    C -- 约束类 --> D[升格为 Rules]
+    C -- 事实类 --> E[升格为 Knowledge]
+    C -- 设计权衡 --> F[补充进 Decisions]
 ```
 
 **降级路径**——同样重要、却常被忽略：

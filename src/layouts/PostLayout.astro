@@ -121,7 +121,22 @@ const ZhContent = content.zh;
     }
   })} />
 
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
   <script>
+    // Initialize Mermaid: render all pre[data-language="mermaid"] blocks
+    function renderMermaid(container) {
+      if (typeof mermaid === 'undefined') return;
+      mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+      (container || document).querySelectorAll('pre[data-language="mermaid"]').forEach((pre) => {
+        const svg = document.createElement('div');
+        svg.className = 'mermaid';
+        svg.textContent = pre.textContent;
+        pre.replaceWith(svg);
+      });
+      mermaid.run({ querySelector: '.mermaid' });
+    }
+    document.addEventListener('DOMContentLoaded', () => renderMermaid());
+
     import tocbot from 'tocbot';
 
     // Read i18n data from DOM
@@ -233,6 +248,9 @@ const ZhContent = content.zh;
           tocbot.destroy();
           initToc();
           initTocToggles();
+
+          // Re-initialize Mermaid for the newly visible content
+          renderMermaid(target);
         });
       });
 

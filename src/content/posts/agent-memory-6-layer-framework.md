@@ -98,18 +98,14 @@ Session is also the "entry point" for other layers — for example, when you hit
 
 The six layers form a dependency chain:
 
-```
-         Identity
-            │
-            ▼
-          Rules
-         ╱     ╲
-Knowledge    Decisions
-         ╲     ╱
-       Experience
-            │
-            ▼
-         Session
+```mermaid
+flowchart TB
+    Identity --> Rules
+    Rules --> Knowledge
+    Rules --> Decisions
+    Knowledge --> Experience
+    Decisions --> Experience
+    Experience --> Session
 ```
 
 1. **Identity and Rules** have the longest lifespans, constraining the boundaries of all lower layers.
@@ -134,13 +130,13 @@ Memory is alive; information moves between layers.
 
 **Promotion path** — from "captured experience" to "hardened knowledge":
 
-```
-Pitfall encountered
-  → Record in Experience
-    → Validated across projects?
-      → Constraint-type → Promote to Rules
-      → Fact-type → Promote to Knowledge
-      → Design tradeoff → Supplement Decisions
+```mermaid
+flowchart LR
+    A[Pitfall encountered] --> B[Record in Experience]
+    B --> C{Validated across projects?}
+    C -- Constraint-type --> D[Promote to Rules]
+    C -- Fact-type --> E[Promote to Knowledge]
+    C -- Design tradeoff --> F[Supplement Decisions]
 ```
 
 **Demotion path** — equally important, often overlooked:
