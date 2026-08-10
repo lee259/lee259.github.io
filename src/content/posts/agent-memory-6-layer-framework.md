@@ -15,7 +15,7 @@ Split memory into six layers — Identity, Rules, Knowledge, Decisions, Experien
 
 ## 2. Why Layering Matters
 
-Let's be blunt: bigger context windows aren't always better. Anthropic's [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) describes a phenomenon called **context rot**: the longer the context, the more scattered the model's attention, and the worse its accuracy at retrieving key information. Stuffing all memory into context is trading attention for capacity — the more you store, the more you lose.
+Bigger context windows aren't always better. Anthropic's [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) describes a phenomenon called **context rot**: the longer the context, the more scattered the model's attention, and the worse its accuracy at retrieving key information. Stuffing all memory into context is trading attention for capacity — the more you store, the more you lose.
 
 The consequences of not layering, as I've seen in practice, fall into three categories:
 

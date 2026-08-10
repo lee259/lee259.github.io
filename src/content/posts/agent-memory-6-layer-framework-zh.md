@@ -15,9 +15,9 @@ Agent 的记忆管理，说到底就三件事：**该记住的进文件，该丢
 
 ## 二、为什么需要分层
 
-先说句不好听的：上下文窗口不是越大越好。Anthropic 在 [《Effective context engineering for AI agents》](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) 里提过一个现象——**context rot（上下文腐烂）**：上下文越长，模型注意力越涣散，检索关键信息的准确率反而下降。把记忆全塞进上下文，等于用注意力换容量，越存越亏。
+上下文窗口不是越大越好。Anthropic 在 [《Effective context engineering for AI agents》](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) 里提过一个现象——**context rot（上下文腐烂）**：上下文越长，模型注意力越涣散，检索关键信息的准确率反而下降。把记忆全塞进上下文，等于用注意力换容量，越存越亏。
 
-不分层的后果，我在实践里见到的无非三类：
+不分层的后果，我在实践里见过三类：
 
 1. **身份散落**——每次会话都要重新对齐"你是谁、什么风格、边界在哪"，每次都从零开始。
 2. **规则被经验冲淡**——真正必须守的硬规则和踩坑心得混在一起，"必须"两个字逐渐失去力气。
