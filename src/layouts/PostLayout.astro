@@ -74,7 +74,7 @@ const ZhContent = content.zh;
         </div>
       </header>
       <div data-field="body">
-        {EnContent && <div class="lang-content" data-lang="en"><EnContent /></div>}
+        {EnContent && <div class="lang-content" data-lang="en" style={defaultLang !== 'en' ? 'display:none' : undefined}><EnContent /></div>}
         {ZhContent && <div class="lang-content" data-lang="zh" style={defaultLang !== 'zh' ? 'display:none' : undefined}><ZhContent /></div>}
       </div>
     </article>
@@ -129,22 +129,39 @@ const ZhContent = content.zh;
       s.onload = () => {
         if (typeof mermaid !== 'undefined') {
           mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
-          renderMermaid();
+          // Only render the currently visible language — rendering inside
+          // display:none containers produces broken 0-size SVGs that stay
+          // broken after a language switch (mermaid skips processed nodes).
+          renderMermaid(getVisibleContentEl());
         }
       };
       s.onerror = () => console.warn('Mermaid failed to load, diagrams will not render');
       document.head.appendChild(s);
     }
 
+    // The language container currently shown on screen (exactly one has no display:none)
+    function getVisibleContentEl() {
+      return document.querySelector('.lang-content:not([style*="display"])')
+        || document.querySelector('[data-field="body"]')
+        || document;
+    }
+
     function renderMermaid(container) {
-      if (typeof mermaid === 'undefined') return;
-      (container || document).querySelectorAll('pre[data-language="mermaid"]').forEach((pre) => {
+      if (typeof mermaid === 'undefined' || !container) return;
+      const nodes = [];
+      container.querySelectorAll('pre[data-language="mermaid"]').forEach((pre) => {
         const svg = document.createElement('div');
         svg.className = 'mermaid';
         svg.textContent = pre.textContent;
         pre.replaceWith(svg);
+        nodes.push(svg);
       });
-      mermaid.run({ querySelector: '.mermaid' });
+      if (nodes.length === 0) return;
+      try {
+        mermaid.run({ nodes });
+      } catch (err) {
+        console.warn('Mermaid render failed:', err);
+      }
     }
 
     // Load Mermaid after DOM is ready
@@ -168,9 +185,9 @@ const ZhContent = content.zh;
 
     // Get the currently visible language content element
     function getVisibleContentSelector() {
-      const visible = document.querySelector('.lang-content:not([style*="display"])');
-      if (visible) {
-        const lang = visible.getAttribute('data-lang');
+      const visible = getVisibleContentEl();
+      const lang = visible && visible.getAttribute && visible.getAttribute('data-lang');
+      if (lang) {
         return `.lang-content[data-lang="${lang}"]`;
       }
       return '[data-field="body"]';
