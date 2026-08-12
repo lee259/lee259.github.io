@@ -2,7 +2,7 @@
   "name": "lee259-github-io",
   "type": "module",
   "version": "1.0.0",
-  "description": "Lee's Engineering Notes — AI Agent, Frontend Infrastructure, Developer Tools",
+  "description": "Lee's Notes — AI Agent, Frontend Infrastructure, Developer Tools, Career & Communication",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

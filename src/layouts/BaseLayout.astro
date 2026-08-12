@@ -15,7 +15,7 @@ export interface Props {
 
 const {
   title,
-  description = 'Engineering notes on AI agents, coding tools, and scalable systems.',
+  description = 'Notes on AI agents, engineering, developer tools, and career & communication.',
   image,
   canonical,
   wide = false,
@@ -24,7 +24,7 @@ const {
   tags = [],
 } = Astro.props;
 
-const siteName = "Lee's Engineering Notes";
+const siteName = "Lee's Notes";
 const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
 const ogImage = image || 'https://lee259.github.io/og-default.png';
 const pageUrl = canonical || Astro.url.href;
@@ -62,7 +62,7 @@ const pageUrl = canonical || Astro.url.href;
   <body>
     <div class={wide ? 'container container--wide' : 'container'}>
       <nav>
-        <a href="/" class="logo">Lee's Engineering Notes</a>
+        <a href="/" class="logo">Lee's Notes</a>
         <ul class="nav-links">
           <li><a href="/">Home</a></li>
           <li><a href="/posts">Posts</a></li>

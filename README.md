@@ -1,10 +1,11 @@
-# [Lee's Engineering Notes](https://lee259.github.io)
+# [Lee's Notes](https://lee259.github.io)
 
 Personal blog about:
 
 - **AI Agents** — Coding agents, memory systems, agent architecture
 - **Frontend Infrastructure** — Scalable systems, tooling, component libraries
 - **Developer Tools** — Productivity tools, automation, CLI utilities
+- **Career & Communication** — Reporting, teamwork, professional growth
 
 ## Tech Stack
 
