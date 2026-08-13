@@ -5,8 +5,6 @@ date: 2026-08-13
 tags: ["AI Agent", "架构", "开发者工具"]
 ---
 
-# TencentDB Agent Memory 剖析：让 Agent 团队共享经验，不共享隐私
-
 > 项目背景讲过了，不该换个 Session 再讲。文档读过了，不该每个 Agent 从第一页重读。一套做法已经跑通，不该下次再摸索一遍。
 
 这是腾讯开源的 [TencentDB Agent Memory](https://github.com/TencentCloud/TencentDB-Agent-Memory) 项目 README 里的一段话。读完之后，我意识到它戳中了当前 Agent 应用的一个核心痛点：**经验无法沉淀，每次都是从零开始**。
