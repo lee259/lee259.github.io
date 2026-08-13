@@ -5,6 +5,8 @@ date: 2026-08-13
 tags: ["AI Agent", "架构", "开发者工具"]
 ---
 
+# TencentDB Agent Memory 剖析：让 Agent 团队共享经验，不共享隐私
+
 > 项目背景讲过了，不该换个 Session 再讲。文档读过了，不该每个 Agent 从第一页重读。一套做法已经跑通，不该下次再摸索一遍。
 
 这是腾讯开源的 [TencentDB Agent Memory](https://github.com/TencentCloud/TencentDB-Agent-Memory) 项目 README 里的一段话。读完之后，我意识到它戳中了当前 Agent 应用的一个核心痛点：**经验无法沉淀，每次都是从零开始**。
@@ -203,7 +205,6 @@ flowchart LR
 - L2→L3 抽象：从多个 Scenario 中提炼长期画像和稳定模式
 
 **召回策略**：
-
 ```
 用户问题
     ↓
@@ -377,10 +378,36 @@ LangGraph 提供了 Memory 模块，支持对话历史管理。
 
 | 问题 | 影响 | 可能的改进方向 |
 |------|------|---------------|
+| **记忆提取可信度存疑** | LLM 提炼的事实/偏好可能不准确，错误记忆会被"传承" | 记忆来源追溯、置信度评分、人工验证机制 |
 | Wiki/CodeGraph 异步构建 | 首次使用需要等待 | 增量更新、预热机制 |
 | CodeGraph 优先支持公开仓库 | 私有仓库体验差 | SSH 凭证支持、本地索引 |
 | 记忆路由仍需人工绑定 | 自动化程度不够 | 基于内容的自动路由 |
 | 跨框架迁移有限 | 锁定风险 | 标准化记忆格式 |
+
+### 记忆可信度：被忽视的风险
+
+这是一个值得单独展开的问题。
+
+TencentDB Agent Memory 的记忆提取依赖 LLM 从对话中提炼 L1 Atom（事实、偏好、约束）。但 LLM 提炼的结果**不一定可信**：
+
+> LLM 可能误解用户意图，把"暂时不重构"提炼成"永远不动"
+>
+> LLM 可能错误归纳，把个案偏好当成普遍规则
+>
+> LLM 可能遗漏关键上下文，丢失重要约束
+>
+> LLM 可能添加不存在的"记忆"，产生幻觉
+
+**更危险的是**：这些错误记忆会被装配给其他 Agent，形成"错误传承"。Agent A 误解的偏好，会被 Agent B 当成事实执行。
+
+当前项目没有看到：
+
+- 记忆提取的准确率评估机制
+- 记忆来源追溯（这条记忆是从哪段对话提炼的？）
+- 记忆冲突检测（两条记忆矛盾时怎么办？）
+- 人工验证/纠正流程
+
+**这意味着**：TencentDB Agent Memory 解决了"经验如何沉淀和共享"的问题，但没有完全解决"沉淀的经验是否正确"的问题。使用者需要意识到，记忆资产不是 100% 可信的，关键决策仍需人工确认。
 
 ### 设计权衡的思考
 
@@ -407,24 +434,24 @@ PersonaMem 检验 Agent 能否在长期交互后正确理解和运用用户信�
 
 选型的关键不是团队规模，而是**是否需要以下能力**：
 
-| 需要的能力 | 推荐方案 |
-|-----------|---------|
-| 跨 Session 记忆、经验沉淀 | RAG + 简单记忆管理 |
-| 多 Agent 间的记忆共享和隔离 | TencentDB Agent Memory |
-| 记忆资产的版本管理和审核 | TencentDB Agent Memory |
-| 精细的权限控制（ACL） | TencentDB Agent Memory |
+| 需要的能力               | 推荐方案                   |
+| ------------------- | ---------------------- |
+| 跨 Session 记忆、经验沉淀   | RAG + 简单记忆管理           |
+| 多 Agent 间的记忆共享和隔离   | TencentDB Agent Memory |
+| 记忆资产的版本管理和审核        | TencentDB Agent Memory |
+| 精细的权限控制（ACL）        | TencentDB Agent Memory |
 | 结构化的代码理解（调用关系、影响分析） | TencentDB Agent Memory |
-| 文档知识图谱（保留结构和链接关系） | TencentDB Agent Memory |
+| 文档知识图谱（保留结构和链接关系）   | TencentDB Agent Memory |
 
 **具体场景**：
 
-| 场景 | 推荐方案 | 原因 |
-|-----|---------|------|
-| 个人 Agent 助手 | 轻量 RAG + 本地记忆 | 简单够用，无需运维 |
-| 企业级 Agent 平台，但不需要跨 Agent 记忆共享 | RAG + 定制开发 | 大企业也在用 RAG，关键看需求 |
-| 多角色 Agent 协作，需要记忆隔离和共享 | TencentDB Agent Memory | 原生支持 Team + ACL |
-| 知识密集型项目，需要代码影响分析 | TencentDB Agent Memory | CodeGraph 提供结构化索引 |
-| 需要 Skill 复用和版本管理 | TencentDB Agent Memory | Skill 是完整的可执行单元 |
+| 场景                            | 推荐方案                   | 原因                |
+| ----------------------------- | ---------------------- | ----------------- |
+| 个人 Agent 助手                   | 轻量 RAG + 本地记忆          | 简单够用，无需运维         |
+| 企业级 Agent 平台，但不需要跨 Agent 记忆共享 | RAG + 定制开发             | 大企业也在用 RAG，关键看需求  |
+| 多角色 Agent 协作，需要记忆隔离和共享        | TencentDB Agent Memory | 原生支持 Team + ACL   |
+| 知识密集型项目，需要代码影响分析              | TencentDB Agent Memory | CodeGraph 提供结构化索引 |
+| 需要 Skill 复用和版本管理              | TencentDB Agent Memory | Skill 是完整的可执行单元   |
 
 ## 总结
 
@@ -451,3 +478,7 @@ TencentDB Agent Memory 的核心价值：
 - [Andrej Karpathy 的 LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — Wiki 层设计灵感来源
 - [Mem0](https://github.com/mem0ai/mem0) — 通用 Agent 记忆层方案
 - [Zep](https://www.getzep.com/) — 商业化 Agent 记忆平台
+
+### 引用说明
+
+本文引用的图片和数据来自 TencentDB Agent Memory 官方 README，已核对原文。

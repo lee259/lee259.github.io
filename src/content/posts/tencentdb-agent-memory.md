@@ -377,10 +377,36 @@ LangGraph provides a Memory module with conversation history management.
 
 | Issue | Impact | Possible Improvement |
 |-------|--------|---------------------|
+| **Memory extraction credibility is questionable** | Facts/preferences distilled by LLMs may be inaccurate; bad memories get "inherited" | Provenance tracing, confidence scoring, human verification |
 | Wiki/CodeGraph async construction | First use requires waiting | Incremental updates, pre-warming |
 | CodeGraph prioritizes public repos | Poor private repo experience | SSH credential support, local indexing |
 | Memory routing requires manual binding | Not enough automation | Content-based auto-routing |
 | Limited cross-framework migration | Vendor lock-in risk | Standardized memory format |
+
+### Memory Credibility: The Overlooked Risk
+
+This issue deserves its own section.
+
+TencentDB Agent Memory relies on LLMs to distill L1 Atoms (facts, preferences, constraints) from conversations. But LLM distillation is **not always trustworthy**:
+
+> An LLM may misread user intent — turning "don't refactor for now" into "never touch this"
+>
+> An LLM may overgeneralize — treating a one-off preference as a universal rule
+>
+> An LLM may drop critical context — losing important constraints
+>
+> An LLM may invent memories that never existed — hallucinations
+
+**Worse**: those incorrect memories can be assembled into other agents, creating "error inheritance." A preference Agent A misunderstood becomes a fact Agent B executes.
+
+The current project doesn't appear to provide:
+
+- Accuracy evaluation for memory extraction
+- Provenance tracing (which conversation did this memory come from?)
+- Conflict detection (what happens when two memories contradict?)
+- Human verification / correction workflows
+
+**What this means**: TencentDB Agent Memory solves "how experience can be accumulated and shared," but not fully "whether the accumulated experience is correct." Users should treat memory assets as less than 100% trustworthy — critical decisions still need human confirmation.
 
 ### Design Tradeoffs
 
@@ -451,3 +477,7 @@ But it comes with costs: higher architectural complexity and operational overhea
 - [Andrej Karpathy's LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — Design inspiration for Wiki layer
 - [Mem0](https://github.com/mem0ai/mem0) — General agent memory layer
 - [Zep](https://www.getzep.com/) — Commercial agent memory platform
+
+### Attribution
+
+Images and data cited in this article come from the official TencentDB Agent Memory README and have been checked against the source.
