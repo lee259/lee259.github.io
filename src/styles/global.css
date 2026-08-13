@@ -692,6 +692,37 @@ footer a:hover {
 }
 
 /* ============================================
+   Mermaid diagrams — official handDrawn look
+   ============================================ */
+.mermaid {
+  margin: 1.75rem 0;
+  text-align: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mermaid svg {
+  /* Preserve intrinsic width so wide diagrams stay readable and scroll. */
+  max-width: none;
+  height: auto;
+  display: inline-block;
+}
+
+.post-content .mermaid {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .post-content .mermaid {
+    background: transparent;
+    border-color: var(--border);
+  }
+}
+
+/* ============================================
    Responsive
    ============================================ */
 @media (max-width: 1024px) {

@@ -122,21 +122,43 @@ const ZhContent = content.zh;
   })} />
 
   <script>
-    // Dynamically load Mermaid from CDN (non-blocking - failures won't break other features)
-    function loadMermaid() {
-      const s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js';
-      s.onload = () => {
-        if (typeof mermaid !== 'undefined') {
-          mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
-          // Only render the currently visible language — rendering inside
-          // display:none containers produces broken 0-size SVGs that stay
-          // broken after a language switch (mermaid skips processed nodes).
-          renderMermaid(getVisibleContentEl());
-        }
-      };
-      s.onerror = () => console.warn('Mermaid failed to load, diagrams will not render');
-      document.head.appendChild(s);
+    // ============================================
+    // Mermaid diagrams — official handDrawn look
+    // ============================================
+
+    function loadScript(src) {
+      return new Promise((resolve) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = resolve;
+        document.head.appendChild(s);
+      });
+    }
+
+    function preferredMermaidTheme() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'neutral';
+    }
+
+    // Dynamically load Mermaid from CDN (non-blocking — failures won't break other features)
+    async function loadMermaid() {
+      await loadScript('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js');
+      if (typeof mermaid === 'undefined') {
+        console.warn('Mermaid failed to load, diagrams will not render');
+        return;
+      }
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: preferredMermaidTheme(),
+        look: 'handDrawn',
+        // Keep natural diagram size; wide charts scroll instead of shrinking.
+        flowchart: { useMaxWidth: false },
+        sequence: { useMaxWidth: false },
+      });
+      // Only render the currently visible language — rendering inside
+      // display:none containers produces broken 0-size SVGs that stay
+      // broken after a language switch (mermaid skips processed nodes).
+      renderMermaid(getVisibleContentEl());
     }
 
     // The language container currently shown on screen (exactly one has no display:none)
@@ -146,19 +168,34 @@ const ZhContent = content.zh;
         || document;
     }
 
+    function preserveMermaidSize(nodes) {
+      nodes.forEach((node) => {
+        const svg = node.querySelector('svg');
+        if (!svg) return;
+        // Mermaid often injects width:100%/max-width which shrinks wide diagrams.
+        svg.style.width = 'auto';
+        svg.style.maxWidth = 'none';
+        svg.removeAttribute('width');
+      });
+    }
+
     function renderMermaid(container) {
       if (typeof mermaid === 'undefined' || !container) return;
       const nodes = [];
       container.querySelectorAll('pre[data-language="mermaid"]').forEach((pre) => {
-        const svg = document.createElement('div');
-        svg.className = 'mermaid';
-        svg.textContent = pre.textContent;
-        pre.replaceWith(svg);
-        nodes.push(svg);
+        const el = document.createElement('div');
+        el.className = 'mermaid';
+        el.textContent = pre.textContent;
+        pre.replaceWith(el);
+        nodes.push(el);
       });
       if (nodes.length === 0) return;
       try {
-        mermaid.run({ nodes });
+        mermaid.run({ nodes }).then(() => {
+          preserveMermaidSize(nodes);
+        }).catch((err) => {
+          console.warn('Mermaid render failed:', err);
+        });
       } catch (err) {
         console.warn('Mermaid render failed:', err);
       }
