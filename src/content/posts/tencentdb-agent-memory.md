@@ -416,19 +416,6 @@ The current project doesn't appear to provide:
 
 **Private-first vs. Share-first**: Defaulting to private is safer but may slow knowledge flow. Is this the right tradeoff? It depends on enterprise security requirements — strict environments need private-first.
 
-## Benchmark Results
-
-PersonaMem tests whether an agent can correctly understand and apply user information after long-term interaction:
-
-| Benchmark | Without TencentDB Agent Memory | With it | Relative Improvement |
-|-----------|------------------------------|---------|---------------------|
-| **PersonaMem** | 48% | **76%** | **+59%** |
-
-**Interpretation**:
-- The 48% → 76% improvement is significant, showing that memory assets help long-term interaction
-- But 76% still means 24% of cases where the agent can't correctly understand user information
-- Possible reasons: memory extraction isn't precise enough, recall strategy isn't smart enough, or memory granularity is suboptimal
-
 ## When Should You Use It?
 
 The key question isn't team size — it's **whether you need these capabilities**:
